@@ -152,11 +152,11 @@ Sort pair function is created to sort the victim list by 1st element of the pair
 
 ### Dubins Local planner
 This local planner is impleementied by solving the dubins curve problem.
+```
+Implentation function: test_dubins()
+file: test_dubins.cpp
 
-> Dubins based local planner Flow 
-
-![Dubins local  FLOW ](imgs/blocks/dubins.jpg)
-
+```
  
 ## Plan Path results
 
