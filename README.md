@@ -3,7 +3,7 @@
 
 The technical documentation of the whole code base can be found inside docs folder in html and latex format.
 
-Technical documentation link:(https://ambikeya-pradhan.github.io/AppliedRoboticsStudentInterface/html/index.html)
+Technical documentation link:(https://github.com/ambikeya-pradhan/AppliedRoboticsStudentInterface)
 
 ## Libraries Used
 
