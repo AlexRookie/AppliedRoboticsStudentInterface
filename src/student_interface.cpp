@@ -52,6 +52,12 @@ double compute_angle(Point a, Point b);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
+/**
+    *  @brief load Image function in student interface
+    *  @details Function used directly given by Teaching assistant 
+    *  @param img_out Output Image
+    *  @param config_folder location where load image is stored
+    */
 
 void loadImage(cv::Mat& img_out, const std::string& config_folder){  
   static bool initialized = false;
