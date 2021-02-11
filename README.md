@@ -7,7 +7,7 @@ Technical documentation link:(https://github.com/ambikeya-pradhan/AppliedRobotic
 
 ## Libraries Used
 
-- Eigen3 (veersion 3.3)
+- Eigen3 (version 3.3)
 - OpenCV -v3.3
 
 ## Requirements before running the simulator
@@ -133,7 +133,7 @@ Obstacle world consists a list of different type of polygons distinguished on th
 In Plan Path function, we have implemented our own RRT* algorithm, which can be found inside src/student_interface.cpp. In our algorithm we used the already implemented victims list and obstacles' list. Using dubins planner (which consists the initialized value for the algorithm) and clipper library for inflating the polygons. In Dubins local planner, the curvature values are classified as either +MAX or -MIN. 
 
 ### Planning Algorithm: 
-Inside Plan Path finction, once Obstacle World list is declared, which mission to  choose is decided by the user. A non-discretized path named as raw path is initiated. RRT planning is called with all the pre-initialized values for theta, path, raw path, kmax, node points, obstacle list, obstacles' radii, obstacles' center, length of the path and information about the gate. 
+Inside Plan Path function, once Obstacle World list is declared, which mission to  choose is decided by the user. A non-discretized path named as raw path is initiated. RRT planning is called with all the pre-initialized values for theta, path, raw path, kmax, node points, obstacle list, obstacles' radii, obstacles' center, length of the path and information about the gate. 
    Then Costmap Matrix is initialized. Costmap connnections are calculated. The first and second loop to compute costs in pair-wise combination is initiated. Consecutive node points are received. Planning algorithm is called again. Time cost is calculated and added to the costmap. Time bonus is added unless Goal column is received. Paths are then cleared for the next computation. First and second loop end here.
 Once boths loops are computed, print and write the costmap. Using Djisktra method, we found the best cost path and major points are added to the raw path. The RRT planning is computed. 
 
@@ -151,7 +151,7 @@ After RRT ends, loop for RRT star is intiated. It will start again from the line
 Sort pair function is created to sort the victim list by 1st element of the pair. Compute angle function is used to find the angle between the defined two points. 
 
 ### Dubins Local planner
-This local planner is impleementied by solving the dubins curve problem.
+This local planner is implemented by solving the dubins curve problem.
 ```
 Implentation function: test_dubins()
 file: test_dubins.cpp
