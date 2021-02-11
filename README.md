@@ -85,9 +85,6 @@ Function Available in:  src/student_interface.cpp
 Reference for implementation:  professor_interface.cpp, demo code and opencv library
 ```
 
-> Flow diagram of obstacle detection
-![Obstacles Flow diagram](imgs/blocks/processObstacles.jpg)
-
 > Obstacle detection Output
 ![Obstacles Result](imgs/results/processObstacles.png)
 
@@ -99,9 +96,6 @@ Functionality:  To get all gate/Destination information
 Function Available in:  src/student_interface.cpp
 Reference for implementation:  professor_interface.cpp, demo code and opencv library
 ```
-> Flow diagram of Gate detection
-![Gate Flow diagram](imgs/blocks/processGate.jpg)
-
 > Gate detection Output
 ![gates Result](imgs/results/processGate.png)
 
@@ -114,9 +108,6 @@ Function Available in:  src/student_interface.cpp
 Reference for implementation:  professor_interface.cpp, demo code and opencv library
 ```
 
-> Flow diagram of Victims detection
-![Victims Flow diagram](imgs/blocks/processVictims.jpg)
-
 > Victims detection Output
 ![Victims Result](imgs/results/processVictims.png)
 
@@ -128,9 +119,6 @@ Implemented Function:   findRobot()
 Functionality:  To get the robot location
 Function Available in:  src/student_interface.cpp
 ```
-
-> Flow diagram of Robot Detection
-![Robot detection diagram](imgs/blocks/findRobot.jpg)
 
 > Robot detection  Output
 ![Robot detection Result](imgs/results/findRobot.png)
@@ -164,11 +152,11 @@ Sort pair function is created to sort the victim list by 1st element of the pair
 
 ### Dubins Local planner
 This local planner is impleementied by solving the dubins curve problem.
+```
+Implentation function: test_dubins()
+file: test_dubins.cpp
 
-> Dubins based local planner Flow 
-
-![Dubins local  FLOW ](imgs/blocks/dubins.jpg)
-
+```
  
 ## Plan Path results
 
