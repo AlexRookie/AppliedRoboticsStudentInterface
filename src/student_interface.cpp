@@ -99,15 +99,14 @@ void loadImage(cv::Mat& img_out, const std::string& config_folder){
  
 static int i;
 static bool state = false;
-
- /**
+/**
   *  @brief Function to save images for intrinsic calibration
   *  @details Through this the images are saved from the simulator which contains checkerboard. 
   *  @param img_in Input Image
   *  @param topic topic in which the image arrives
   *  @param config_folder config folder to store the saved images
   *  @return  true/false robot found or not
-  *
+  */
  void genericImageListener(const cv::Mat& img_in, std::string topic, const std::string& config_folder){
    
     if (!state) {
@@ -204,7 +203,6 @@ static bool state = false;
     }
  
     cv::destroyWindow(name.c_str());
-    return result;
   }
  
 // - - - - - - - - -
@@ -724,7 +722,7 @@ cv::Mat rotate(cv::Mat in_ROI, double ang_degrees){
     *  triangle→Find angle between top vertex and center(Orientation)→return state(x,y,ψ) 
     *  @param img_in Input Image
     *  @param scale scaling factor
-    *  @param triangle The outpu triangle of robot
+    *  @param triangle The output triangle of robot
     *  @param x robot pose (center) x
     *  @param y robot pose (center) y
     *  @param theta robot pose (initial) theta
