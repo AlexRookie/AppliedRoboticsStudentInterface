@@ -99,7 +99,15 @@ void loadImage(cv::Mat& img_out, const std::string& config_folder){
  
 static int i;
 static bool state = false;
- 
+
+ /**
+  *  @brief Function to save images for intrinsic calibration
+  *  @details Through this the images are saved from the simulator which contains checkerboard. 
+  *  @param img_in Input Image
+  *  @param topic topic in which the image arrives
+  *  @param config_folder config folder to store the saved images
+  *  @return  true/false robot found or not
+  *
  void genericImageListener(const cv::Mat& img_in, std::string topic, const std::string& config_folder){
    
     if (!state) {
