@@ -30,7 +30,7 @@ const int least_nodes = 20;
 const bool RRT_STAR = true;
 
 // Choose mission & params
-const bool mission_2 = false;
+const bool mission_2 = true;
 const int bonus = 2;	// Bonus time for picking up victim (seconds)
 const double speed = 0.2;	// Should be ~ 0.2 m/s (0.5m/2.5s)	
 
@@ -51,7 +51,12 @@ double compute_angle(Point a, Point b);
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - -
-
+/**
+    *  @brief load Image function in student interface
+    *  @details Function used directly given by Teaching assistant 
+    *  @param img_out Output Image
+    *  @param config_folder location where load image is stored
+    */
 
 void loadImage(cv::Mat& img_out, const std::string& config_folder){  
   static bool initialized = false;
@@ -144,7 +149,14 @@ static bool state = false;
   static std::atomic<bool> done;
   static int n;
   static double show_scale = 2.0;
- 
+
+/**
+  *  @brief Function called after every mouse click
+  *  @details Function obatined from Professor interface
+  *  @param event mouse event occured 
+  *  @param x x-position of mouse event
+  *  @param y y-position of mouse event   
+  */
   void mouseCallback(int event, int x, int y, int, void* p)
   {
     if (event != cv::EVENT_LBUTTONDOWN || done.load()) return;
@@ -158,7 +170,13 @@ static bool state = false;
       done.store(true);
     }
   }
- 
+
+/**
+  *  @brief Function to pick points from image
+  *  @details Function obatined from Professor interface
+  *  @param n0 number of points to be picked 
+  *  @param img the image from which the points are to be chosen
+  */
   std::vector<cv::Point2f> pickNPoints(int n0, const cv::Mat& img)
   {
     result.clear();
@@ -183,7 +201,18 @@ static bool state = false;
  
 // - - - - - - - - -
  
-  
+/**
+  *  @brief Function for extrinsic calibration
+  *  @details Extrinsic calibration to determine the Rotational and translational matrix. Four points will be chosen
+  *  in the image plane and then these 4 points will be solved using the solvePnP interface from opencv to solve the 
+  *  extrinsic problem.
+  *  @param img_in input image 
+  *  @param oject_points 4 points that are chosen in image
+  *  @param camera_matrix The obtained camera matrix from intrinsic calibration  
+  *  @param rvec Output rotational vector
+  *  @param tvec Output translational vector
+  *  @param config_folder Output folder (if file existing then function justs reads the file to get rvec and tvec)
+  */
   bool extrinsicCalib(const cv::Mat& img_in, std::vector<cv::Point3f> object_points, const cv::Mat& camera_matrix, cv::Mat& rvec, cv::Mat& tvec, const std::string& config_folder){
  
     std::string extrinsic_path = config_folder + "/extrinsicCalib.csv";
@@ -223,26 +252,62 @@ static bool state = false;
     return result;
  
   }
- 
+
+/**
+  *  @brief Function undistort the given image
+  *  @details Using the distortion coefficients obtained in the previous steps, remove the distorted 
+  *  effect on the image. This is done using the opencv undistort function
+  *  @param img_in input image
+  *  @param img_out output image 
+  *  @param camera_matrix The obtained camera matrix from intrinsic calibration  
+  *  @param dist_coeffs distortion coefficients
+  *  @param config_folder Output folder (if file existing then function justs reads the file to get rvec and tvec) 
+  */
   void imageUndistort(const cv::Mat& img_in, cv::Mat& img_out,
           const cv::Mat& cam_matrix, const cv::Mat& dist_coeffs, const std::string& config_folder){
  
     cv::undistort(img_in, img_out, cam_matrix, dist_coeffs);
  
   }
- 
+/**
+  *  @brief Perspective projection
+  *  @details Now to have a bird’s eye view of the image, where we need to project the 3D objects in a image plane, 
+  *  carry out Perspective Projection initially.  This is again carried out with the  opencv  interfaces,   
+  *  projectPoints()  and getPerspectiveTransform().  
+  *  @param cam_matrix camera_matrix
+  *  @param rvec Output rotational vector
+  *  @param tvec Output translational vector
+  *  @param object_points_plane Object points   
+  *  @param dest_image_points_plane destination image points plane
+  *  @param config_folder Output folder (if file existing then function justs reads the file to get rvec and tvec) 
+  */
   void findPlaneTransform(const cv::Mat& cam_matrix, const cv::Mat& rvec, const cv::Mat& tvec, const std::vector<cv::Point3f>& object_points_plane, const std::vector<cv::Point2f>& dest_image_points_plane, cv::Mat& plane_transf, const std::string& config_folder){
     cv::Mat image_points;
     // projectPoint output is image_points
     cv::projectPoints(object_points_plane, rvec, tvec, cam_matrix, cv::Mat(), image_points);
     plane_transf = cv::getPerspectiveTransform(image_points, dest_image_points_plane);
   }
- 
+
+/**
+  *  @brief Image unwarping
+  *  @details Image unwarping using opencv API warpPerspective()  
+  *  @param img_in input image
+  *  @param img_out output image
+  *  @param transf tranformation matrix
+  *  @param config_folder Output folder (if file existing then function justs reads the file to get rvec and tvec) 
+  */
   void unwarp(const cv::Mat& img_in, cv::Mat& img_out, const cv::Mat& transf, const std::string& config_folder){
     cv::warpPerspective(img_in, img_out, transf, img_in.size());
   }
  
- 
+/**
+    *  @brief Obstacle detection function
+    *  @details Steps followed RGB→HSV→Apply red mask→Contours→approximate Polynomial→Return Obstacles 
+    *  @param hsv_img HSV Image input
+    *  @param scale Scaling factor
+    *  @param obstacle_list Output obstacle list
+    *  @return  true/false Execution successful
+    */
   bool detect_red(const cv::Mat& hsv_img, const double scale, std::vector<Polygon>& obstacle_list){
    
     cv::Mat red_mask_low, red_mask_high, red_mask;
@@ -313,7 +378,16 @@ static bool state = false;
     return true;
  
   }
- 
+
+/**
+    *  @brief gate detection function
+    *  @details Steps followed: RGB→HSV→Apply Green mask→Contours→approximate Polynomial→detect 4 points→Return 
+    *  Gate
+    *  @param hsv_img HSV Image input
+    *  @param scale scaling factor
+    *  @param gate Output gate polygon
+    *  @return  true/false Execution successful
+    */
   bool detect_green_gate(const cv::Mat& hsv_img, const double scale, Polygon& gate){
  
     cv::Mat green_mask_gate;    
@@ -381,6 +455,16 @@ cv::Mat rotate(cv::Mat in_ROI, double ang_degrees){
   //std::string template_folder = "/home/shreyas/workspace/project_1/template/";
   std::string template_folder = "/home/robotics/workspace/group_8/template/"; // TODO: Uncomment
 
+/**
+    *  @brief Victim detection function along with digit recognition call
+    *  @details 
+    *  Steps followed: RGB→HSV→Apply Green mask→Contours→approximate Polynomial→detect more than 6 points(check 
+    *  circle)→ get id of victim → return Victims  
+    *  @param hsv_img HSV Image input
+    *  @param scale scaling factor
+    *  @param victim_list Output victim list pair
+    *  @return  true/false Execution successful
+    */
   bool detect_green_victims(const cv::Mat& hsv_img, const double scale, std::vector<std::pair<int,Polygon>>& victim_list){
    
     // Find green regions
@@ -518,6 +602,7 @@ cv::Mat rotate(cv::Mat in_ROI, double ang_degrees){
 	return true;
   }
  
+
   bool detect_blue_robot(const cv::Mat& hsv_img, const double scale, Polygon& triangle, double& x, double& y, double& theta){
  
     cv::Mat blue_mask;    
@@ -597,7 +682,17 @@ cv::Mat rotate(cv::Mat in_ROI, double ang_degrees){
 }
 
 
- 
+/**
+    *  @brief Main function to call processObstacles, processGate and processVictims
+    *  @param boundingRect The bounding rectangle of the victim location 
+    *  @param img_in rgb image of the input
+    *  @param scale scaling factor
+    *  @param obstacle_list Output obstacle list 
+    *  @param victim_list Output victim list pair
+    *  @param gate Output gate polygon
+    *  @param config_folder config folder 
+    *  @return  true/false Execution successful
+    */
   bool processMap(const cv::Mat& img_in, const double scale, std::vector<Polygon>& obstacle_list, std::vector<std::pair<int,Polygon>>& victim_list, Polygon& gate, const std::string& config_folder){
     cv::Mat hsv_img;
     cv::cvtColor(img_in, hsv_img, cv::COLOR_BGR2HSV);
@@ -612,7 +707,22 @@ cv::Mat rotate(cv::Mat in_ROI, double ang_degrees){
  
     return red && green_gate && green_victims;
   }
- 
+
+/**
+    *  @brief find Robot function in student interface
+    *  @details Directly utilized the function provided by the teaching assistant as I found that implementation was 
+    *  already in the best shape.
+    *  RGB→HSV→blue mask→Contours→Approximate polynomial→find 3 points of polynomial→Find center of 
+    *  triangle→Find angle between top vertex and center(Orientation)→return state(x,y,ψ) 
+    *  @param img_in Input Image
+    *  @param scale scaling factor
+    *  @param triangle The outpu triangle of robot
+    *  @param x robot pose (center) x
+    *  @param y robot pose (center) y
+    *  @param theta robot pose (initial) theta
+    *  @param config_folder config folder if any configuration params to be loaded
+    *  @return  true/false robot found or not
+    */
   bool findRobot(const cv::Mat& img_in, const double scale, Polygon& triangle, double& x, double& y, double& theta, const std::string& config_folder){
     cv::Mat hsv_img;
     cv::cvtColor(img_in, hsv_img, cv::COLOR_BGR2HSV);
@@ -665,6 +775,17 @@ cv::Mat rotate(cv::Mat in_ROI, double ang_degrees){
     }
  
 }
+/**
+    * @brief Plan a safe and fast path in the arena
+    * @param  borders        border of the arena [m]
+    * @param obstacle_list  list of obstacle polygon [m]
+    * @param victim_list    list of pair victim_id and polygon [m]
+    * @param gate           polygon representing the gate [m]
+    * @param x              x position of the robot in the arena reference system
+    * @param y              y position of the robot in the arena reference system
+    * @param theta          yaw of the robot in the arena reference system
+    * @param config_folder  A custom string from config file.
+    */
   bool planPath(const Polygon& borders, const std::vector<Polygon>& obstacle_list, const std::vector<std::pair<int,Polygon>>& victim_list, const Polygon& gate, const float x, const float y, const float theta, Path& path, const std::string& config_folder){
    
     int kmax = 10;      // Max angle of curvature
