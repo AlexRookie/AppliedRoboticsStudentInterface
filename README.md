@@ -150,6 +150,9 @@ After RRT ends, loop for RRT star is intiated. It will start again from the line
 
 Sort pair function is created to sort the victim list by 1st element of the pair. Compute angle function is used to find the angle between the defined two points. 
 
+> RRT secondary function description
+![RRT SECONDARY FLOW](imgs/blocks/rpa-RRT Function Described.png)
+
 ### Dubins Local planner
 This local planner is implemented by solving the dubins curve problem.
 ```
